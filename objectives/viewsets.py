@@ -13,7 +13,7 @@ class ObjectiveViewSet(viewsets.ModelViewSet):
         return self.model.objects.select_related(
             'user',
         ).all()
-    
+
     def create(self, request, *args, **kwargs):
         data = request.data
         data['user'] = request.user.pk

@@ -16,6 +16,7 @@ from django.utils.encoding import force_bytes
 from django.utils.http import urlsafe_base64_encode
 from django.utils.translation import ugettext_lazy as _
 from django.utils.translation import ugettext_noop
+from django.utils import timezone
 
 # managers
 from users.managers import UserManager
@@ -69,6 +70,25 @@ class User(AbstractBaseUser, PermissionsMixin, BaseModel):
         _('date joined'), default=timezone.now,
         help_text=_("The date this user was created in the database"),
     )
+    country = models.ForeignKey(
+        'countries_plus.Country',
+        verbose_name=_('country'),
+        blank=True,
+        null=True,
+        on_delete=models.SET_NULL,
+    )
+    language = models.ForeignKey(
+        'languages.Language',
+        verbose_name=_('language'),
+        blank=True,
+        null=True,
+        on_delete=models.SET_NULL,
+    )
+    birthday = models.DateField(
+        _('birthday'),
+        blank=True,
+        null=True,
+    )
     # Use UserManager to get the create_user method, etc.
     objects = UserManager()
 
@@ -82,6 +102,16 @@ class User(AbstractBaseUser, PermissionsMixin, BaseModel):
         permissions = (
             ('view_user', _('Can view user')),
         )
+
+    def age(self):
+        today = timezone.now()
+        born = self.birthday
+        if born:
+            age = today.year - born.year - \
+                ((today.month, today.day) < (born.month, born.day))
+        else:
+            age = 0
+        return age
 
     def clean(self):
         super(User, self).clean()
