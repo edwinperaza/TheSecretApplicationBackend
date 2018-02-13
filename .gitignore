@@ -113,3 +113,8 @@ gobcl.xlsx
 catastro.xlsx
 *.p12
 tmp/
+
+# virtualenv
+bin/
+include/
+pip-selfcheck.json
