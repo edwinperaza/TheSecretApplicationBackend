@@ -17,7 +17,7 @@ class ObjectiveViewSet(viewsets.ModelViewSet):
 
     def create(self, request, *args, **kwargs):
         data = request.data.copy()
-        data['user_id'] = request.user.pk
+        data['user'] = request.user.pk
         serializer = self.get_serializer(data=data)
         serializer.is_valid(raise_exception=True)
         self.perform_create(serializer)
